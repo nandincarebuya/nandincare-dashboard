@@ -65,15 +65,16 @@ export default function AnalyticsPanel() {
   useEffect(() => {
     setDebugInfo('Loading...')
     Promise.all([
-      fetchAllPatients(2000),
+      fetchAllPatients(500),
       fetchPatientsBySource(),
     ]).then(([pts, sources]) => {
       setPatients(pts)
       setSourceData(sources)
-      setDebugInfo(`Patients: ${pts.length}, Sources: ${sources.length}`)
+      const dbg = window.__dbDebug || 'no debug'
+      setDebugInfo(`Patients: ${pts.length}, Sources: ${sources.length} | ${dbg}`)
       setLoading(false)
     }).catch((err) => {
-      setDebugInfo(`ERROR: ${err.message}`)
+      setDebugInfo(`ERROR: ${err.message} | ${window.__dbDebug || ''}`)
       setLoading(false)
     })
   }, [])

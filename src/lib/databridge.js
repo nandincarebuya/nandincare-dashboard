@@ -33,27 +33,34 @@ function mapPatient(row) {
 
 export async function fetchAllPatients(limit = 500) {
   console.log('[databridge] fetchAllPatients called, supabase:', !!supabase)
-  if (!supabase) return []
+  if (!supabase) {
+    window.__dbDebug = 'supabase is null'
+    return []
+  }
 
   const results = []
 
   // Query existing patients table (production data)
   try {
-    const { data, error } = await supabase
+    const { data, error, status, statusText } = await supabase
       .from('patients')
       .select('*')
       .order('created_at', { ascending: false })
       .limit(limit)
 
-    console.log('[databridge] patients query result:', { count: data?.length, error: error?.message })
+    const debugMsg = `status=${status} rows=${data?.length ?? 'null'} err=${error?.message || 'none'}`
+    console.log('[databridge] patients:', debugMsg)
+    window.__dbDebug = debugMsg
 
     if (!error && data) {
       data.forEach((row) => results.push(mapPatient(row)))
     } else if (error) {
-      console.error('[databridge] patients query error:', error)
+      console.error('[databridge] patients query error:', JSON.stringify(error))
+      window.__dbDebug = `ERROR: ${error.message} (code: ${error.code}, status: ${status})`
     }
   } catch (err) {
     console.error('databridge: patients table error:', err)
+    window.__dbDebug = `CATCH: ${err.message}`
   }
 
   // Query v5 patients_v5 if it exists (new schema)

@@ -32,6 +32,7 @@ function mapPatient(row) {
 }
 
 export async function fetchAllPatients(limit = 500) {
+  console.log('[databridge] fetchAllPatients called, supabase:', !!supabase)
   if (!supabase) return []
 
   const results = []
@@ -44,11 +45,15 @@ export async function fetchAllPatients(limit = 500) {
       .order('created_at', { ascending: false })
       .limit(limit)
 
+    console.log('[databridge] patients query result:', { count: data?.length, error: error?.message })
+
     if (!error && data) {
       data.forEach((row) => results.push(mapPatient(row)))
+    } else if (error) {
+      console.error('[databridge] patients query error:', error)
     }
   } catch (err) {
-    console.warn('databridge: patients table error:', err)
+    console.error('databridge: patients table error:', err)
   }
 
   // Query v5 patients_v5 if it exists (new schema)
@@ -217,12 +222,15 @@ export async function fetchRevenueByMonth(months = 6) {
 }
 
 export async function fetchPatientsBySource() {
+  console.log('[databridge] fetchPatientsBySource called, supabase:', !!supabase)
   if (!supabase) return []
 
   try {
     const { data, error } = await supabase
       .from('patients')
       .select('source')
+
+    console.log('[databridge] source query result:', { count: data?.length, error: error?.message })
 
     if (error || !data) return []
 

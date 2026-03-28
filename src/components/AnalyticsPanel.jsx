@@ -60,13 +60,20 @@ export default function AnalyticsPanel() {
     } catch { return {} }
   })
 
+  const [debugInfo, setDebugInfo] = useState('')
+
   useEffect(() => {
+    setDebugInfo('Loading...')
     Promise.all([
       fetchAllPatients(2000),
       fetchPatientsBySource(),
     ]).then(([pts, sources]) => {
       setPatients(pts)
       setSourceData(sources)
+      setDebugInfo(`Patients: ${pts.length}, Sources: ${sources.length}`)
+      setLoading(false)
+    }).catch((err) => {
+      setDebugInfo(`ERROR: ${err.message}`)
       setLoading(false)
     })
   }, [])
@@ -179,6 +186,10 @@ export default function AnalyticsPanel() {
 
   return (
     <div className="space-y-6">
+      {/* Debug banner — remove after fixing */}
+      <div className="bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded-lg p-3 text-sm font-mono text-yellow-800 dark:text-yellow-200">
+        DEBUG: {debugInfo}
+      </div>
       {/* Row 1: Source bar chart + Source doughnut */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5">

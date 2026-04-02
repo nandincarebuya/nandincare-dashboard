@@ -12,6 +12,7 @@ import RevenueChart from './components/RevenueChart'
 import AnalyticsPanel from './components/AnalyticsPanel'
 import NotificationBell from './components/NotificationBell'
 import SyncStatus from './components/SyncStatus'
+import ClinicCalendar from './components/calendar/ClinicCalendar'
 import { searchPatients, fetchTotalRevenue, fetchAllPatients } from './lib/databridge'
 
 function SearchBar({ onOpenPatient }) {
@@ -100,6 +101,7 @@ function DarkModeToggle({ dark, onToggle }) {
 
 const TABS = [
   { key: 'schedule', label: 'Хуваарь' },
+  { key: 'calendar', label: 'Календар' },
   { key: 'revenue', label: 'Орлого' },
   { key: 'agents', label: 'Агентууд' },
   { key: 'analytics', label: 'Аналитик' },
@@ -234,6 +236,10 @@ export default function App() {
               <AlertsFeed />
             </div>
           </div>
+        )}
+
+        {activeTab === 'calendar' && (
+          <ClinicCalendar />
         )}
 
         {activeTab === 'revenue' && (

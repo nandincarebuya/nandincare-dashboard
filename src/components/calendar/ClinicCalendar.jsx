@@ -43,21 +43,22 @@ export default function ClinicCalendar() {
     if (!supabase) return
     setLoading(true)
     try {
-      const { data, error } = await supabase
-        .from('v_calendar_appointments')
-        .select('*')
-        .gte('scheduled_time', start.toISOString())
-        .lte('scheduled_time', end.toISOString())
+      const { data, error } = await supabase.functions.invoke('google-calendar', {
+        body: {
+          timeMin: start.toISOString(),
+          timeMax: end.toISOString(),
+        },
+      })
 
       if (error) throw error
 
       const mapped = (data || []).map((apt) => {
         const color = getDoctorColor(apt.doctor_slug)
         return {
-          id: apt.id,
+          id: apt.gcal_event_id,
           title: apt.patient_name || 'Нэргүй',
           start: apt.scheduled_time,
-          end: new Date(new Date(apt.scheduled_time).getTime() + 30 * 60 * 1000).toISOString(),
+          end: apt.end_time || new Date(new Date(apt.scheduled_time).getTime() + 30 * 60 * 1000).toISOString(),
           backgroundColor: color.bg,
           borderColor: color.border,
           textColor: color.text,

@@ -184,6 +184,12 @@ export default function App() {
               <span className="text-xs text-slate-500 dark:text-slate-400">LIVE</span>
             </div>
             <span className="text-sm text-slate-500 dark:text-slate-400 hidden md:inline">{dateStr}</span>
+            <a
+              href="https://nandincare.com"
+              className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors px-2 py-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700"
+            >
+              Нүүр хуудас
+            </a>
             <button
               onClick={signOut}
               className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors px-2 py-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700"
